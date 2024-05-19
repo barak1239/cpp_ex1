@@ -44,8 +44,6 @@ bool Algorithms::dfs(const Graph& g, int vertex, std::vector<bool>& visited, std
                 parent[neighbor] = vertex;
                 if (!dfs(g, neighbor, visited, parent))
                     return false;
-            } else if (neighbor != parent[vertex]) {
-                return false;
             }
         }
     }
@@ -53,27 +51,32 @@ bool Algorithms::dfs(const Graph& g, int vertex, std::vector<bool>& visited, std
     return true;
 }
 
-std::string Algorithms::dijkstraShortestPath(const Graph& g, int start, int end) {
+std::string Algorithms::bellmanFordShortestPath(const Graph& g, int start, int end) {
     std::vector<int> dist(g.getVertexCount(), std::numeric_limits<int>::max());
     std::vector<int> parent(g.getVertexCount(), -1);
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
 
     dist[start] = 0;
-    pq.push(std::make_pair(0, start));
 
-    while (!pq.empty()) {
-        int currVertex = pq.top().second;
-        pq.pop();
+    for (int i = 0; i < g.getVertexCount() - 1; i++) {
+        for (int u = 0; u < g.getVertexCount(); u++) {
+            for (int v = 0; v < g.getVertexCount(); v++) {
+                if (g.getMatrix()[u][v]) {
+                    int weight = g.getMatrix()[u][v];
+                    if (dist[u] != std::numeric_limits<int>::max() && dist[u] + weight < dist[v]) {
+                        dist[v] = dist[u] + weight;
+                        parent[v] = u;
+                    }
+                }
+            }
+        }
+    }
 
-        for (int neighbor = 0; neighbor < g.getVertexCount(); neighbor++) {
-            if (g.getMatrix()[currVertex][neighbor]) {
-                int weight = g.getMatrix()[currVertex][neighbor];
-                int newDist = dist[currVertex] + weight;
-
-                if (newDist < dist[neighbor]) {
-                    dist[neighbor] = newDist;
-                    parent[neighbor] = currVertex;
-                    pq.push(std::make_pair(newDist, neighbor));
+    for (int u = 0; u < g.getVertexCount(); u++) {
+        for (int v = 0; v < g.getVertexCount(); v++) {
+            if (g.getMatrix()[u][v]) {
+                int weight = g.getMatrix()[u][v];
+                if (dist[u] != std::numeric_limits<int>::max() && dist[u] + weight < dist[v]) {
+                    return "Negative cycle detected";
                 }
             }
         }
@@ -96,11 +99,34 @@ std::string Algorithms::dijkstraShortestPath(const Graph& g, int start, int end)
 
 bool Algorithms::isConnected(const Graph& g) {
     std::vector<bool> visited(g.getVertexCount(), false);
-    return bfs(g, 0, visited);
+
+    if (!bfs(g, 0, visited)) {
+        return false;
+    }
+
+    for (bool v : visited) {
+        if (!v) {
+            return false;
+        }
+    }
+
+    if (g.isDirectedGraph()) {
+        std::fill(visited.begin(), visited.end(), false);
+        std::vector<int> parent(g.getVertexCount(), -1);
+        dfs(g, 0, visited, parent);
+
+        for (bool r : visited) {
+            if (!r) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 std::string Algorithms::shortestPath(const Graph& g, int start, int end) {
-    return dijkstraShortestPath(g, start, end);
+    return Algorithms::bellmanFordShortestPath(g, start, end);
 }
 
 bool Algorithms::isContainsCycle(const Graph& g) {
@@ -109,7 +135,27 @@ bool Algorithms::isContainsCycle(const Graph& g) {
 
     for (int vertex = 0; vertex < g.getVertexCount(); vertex++) {
         if (!visited[vertex]) {
-            if (!dfs(g, vertex, visited, parent)) {
+            if (isCyclicUtil(g, vertex, visited, parent, -1)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Algorithms::isCyclicUtil(const Graph& g, int vertex, std::vector<bool>& visited,
+                              std::vector<int>& parent, int parentVertex) {
+    visited[vertex] = true;
+
+    for (int neighbor = 0; neighbor < g.getVertexCount(); neighbor++) {
+        if (g.getMatrix()[vertex][neighbor]) {
+            if (!visited[neighbor]) {
+                parent[neighbor] = vertex;
+                if (isCyclicUtil(g, neighbor, visited, parent, vertex)) {
+                    return true;
+                }
+            } else if (neighbor != parentVertex) {
                 return true;
             }
         }
@@ -178,7 +224,36 @@ bool Algorithms::isBipartiteUtil(const Graph& g, int src, std::vector<int>& colo
 }
 
 void Algorithms::negativeCycle(const Graph& g) {
-    std::cout << "The negativeCycle function is not implemented." << std::endl;
+    std::vector<int> dist(g.getVertexCount(), std::numeric_limits<int>::max());
+
+    dist[0] = 0;
+
+    for (int i = 0; i < g.getVertexCount() - 1; i++) {
+        for (int u = 0; u < g.getVertexCount(); u++) {
+            for (int v = 0; v < g.getVertexCount(); v++) {
+                if (g.getMatrix()[u][v]) {
+                    int weight = g.getMatrix()[u][v];
+                    if (dist[u] != std::numeric_limits<int>::max() && dist[u] + weight < dist[v]) {
+                        dist[v] = dist[u] + weight;
+                    }
+                }
+            }
+        }
+    }
+
+    for (int u = 0; u < g.getVertexCount(); u++) {
+        for (int v = 0; v < g.getVertexCount(); v++) {
+            if (g.getMatrix()[u][v]) {
+                int weight = g.getMatrix()[u][v];
+                if (dist[u] != std::numeric_limits<int>::max() && dist[u] + weight < dist[v]) {
+                    std::cout << "The graph contains a negative cycle" << std::endl;
+                    return;
+                }
+            }
+        }
+    }
+
+    std::cout << "No negative cycle found" << std::endl;
 }
 
-} 
+}
