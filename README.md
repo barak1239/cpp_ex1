@@ -1,29 +1,31 @@
-# מטלה 1 - גרפים (Classes and Namespaces)
+ex1- graphs and algorithms.
+This project implements a Graph class and various graph algorithms using C++.
+The Graph class represents a graph using an adjacency matrix, and the Algorithms class provides implementations of common graph algorithms such as connectivity check, shortest path, cycle detection, and bipartite graph check.
+In this project we have:
+  Graph representation using an adjacency matrix
+  Support for directed and undirected graphs
+  Loading a graph from an adjacency matrix
+  Printing the graph representation
+  Retrieving the number of vertices and edges in the graph
+  Checking if the graph is directed or undirected
+  Obtaining the transposed graph
+  Graph algorithms:
+  Connectivity check: Determines if the graph is connected
+  Shortest path: Finds the shortest path between two vertices using Dijkstra's algorithm
+  Cycle detection: Checks if the graph contains a cycle
+  Bipartite graph check: Determines if the graph is bipartite and returns the bipartition of vertices
+  Negative cycle detection: Detects the presence of a negative cycle in the graph.
 
-המטרה שלכם במטלה הזאת היא ליצור מחלקה שמייצגת גרף ולממש אלגוריתמים על הגרפים (זה הזמן להזכר בקורס אלגוריתמים 1).
 
-במטלה הזאת הייצוג של הגרף שלכם יתבצע בעזרת מטריצת שכנויות - https://he.wikipedia.org/wiki/%D7%9E%D7%98%D7%A8%D7%99%D7%A6%D7%AA_%D7%A9%D7%9B%D7%A0%D7%95%D7%AA.
-
-הגרף יכול להיות גרף מכוון ולא מכוון וגם גרף ממושקל. מטריצת השכנויות חייבת להיות מטריצה ריבועית.
-
-עליכם לכתוב את הקבצים הבאים:
-
-```
-Graph.cpp
-Algorithms.cpp
-```
-
-הקובץ `Graph.cpp` מכיל מחלקה המייצגת גרף.
-המחלקה מכילה את הפעולות `loadGraph` המקבלת מטריצת שכנויות וטוענת אותה לתוך הגרף ו-`printGraph` שמדפיסה את הייצוג של הגרף (הפורמט לבחירתכם, ראו דוגמה ב-`Demo.cpp`).
-
-הקובץ `Algorithms.cpp` מכיל מימושים לאלגוריתמים על גרפים. ביניהם:
-
-- `isConnected(g)` - האלגוריתם מקבל גרף ומחזיר 1 אם הגרף קשיר (אחרת מחזיר 0).
-- `shortestPath(g,start,end)` - האלגוריתם מקבל גרף, קודקוד התחלה וקודקוד סיום ומחזיר את המסלול הקל ביותר (במקרה שהגרף לא ממושקל - הקצר ביותר) בין שני הקודקודים. במידה ואין מסלול כזה, האלגוריתם יחזיר -1.
-- `isContainsCycle(g)` - האלגוריתם מקבל גרף ומדפיס מעגל כלשהו. אם לא קיים מעגל בגרף, האלגוריתם יחזיר 0.
-- `isBipartite(g)` - האלגוריתם מקבל גרף ומחזיר את החלוקה של הגרף לגרף דו-צדדי. אם אי אפשר לחלק את הגרף, האלגוריתם יחזיר 0.
-- `negativeCycle(g)` - האלגוריתם מקבל גרף ומוצא מעגל שלילי (כלומר מעגל שסכום המשקלים של הצלעות שלילי). אם לא קיים מעגל כזה, האלגוריתם ידפיס שלא קיים מעגל שלילי.
-
-הקובץ `Demo.cpp` מכיל דוגמאות של קלטים ופלטים.
-עליכם לכתוב בתחילת כל קובץ את מספר תעודת הזהות שלכם ואת המייל. כמו כן, בנוסף לקבצים של המטלה אתם נדרשים להגיש גם קובץ README המתאר את אופן המימוש ואת החלוקה שביצעתם בקוד (סוג של מדריך משתמש). אי עמידה בהנחיות תגרור הפחתה בציון. בהצלחה!
-  
+  Implementation
+The project consists of the following main components: 
+  Graph.hpp and Graph.cpp: Implement the Graph class with methods for loading, printing, and manipulating the graph.
+  Algorithms.hpp and Algorithms.cpp: Implement the Algorithms class with various graph algorithms.
+  By using algorithms that will help us like breadth-first search (BFS), depth-first search (DFS), Dijkstra's algorithm, and graph coloring we get to good implementations that are easy to understand.
+  I didn't do using namespace std; as it is considered bad practice.
+  Usage
+To use the Graph and Algorithms classes in your own code, follow these steps:
+  Include the necessary header files: "Graph.hpp" and "Algorithms.hpp".
+  Create an instance of the Graph class and load the graph using the loadGraph method, passing an adjacency matrix as input.
+  Call the desired methods of the Graph class to retrieve information about the graph, such as the number of vertices, number of edges, or the transposed graph.
+  Use the static methods of the Algorithms class to perform graph algorithms on the loaded graph, such as connectivity check, shortest path, cycle detection, or bipartite graph check.
